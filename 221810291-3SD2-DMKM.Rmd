@@ -1,0 +1,88 @@
+---
+title: "Ujian Tengah Semester DMKM"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Variabel target = V7 (status inflamation)  
+```{r}
+data <- read.csv("C:/Users/ACER/Documents/Panii/MATKUL SD/PPT/Kodingan R/DMKM/diagnosis.data", header = FALSE, fileEncoding = "utf-16", sep = ";")
+library(caret)
+library(adabag)
+library(e1071)
+library(dplyr)
+View(data)
+str(data)
+data1 <- select(data, V1, V2, V3, V4, V5, V6, V7)
+
+```
+
+c. Setelah pemanggilan library tersebut disambung dengan membagi data menjadi dua bagian yaitu data training (90% dari data awal) dan data testing (10% dari data awal)    
+```{r}
+indexes=createDataPartition(data1$V7, p=0.9, list = F)
+datatraining1 <- data1[indexes,]
+datatesting1<-data1[-indexes,]
+print(paste("Jumlah data training  adalah ", nrow(datatraining1)))
+print(paste("Jumlah data testing adalah ", nrow(datatesting1)))
+```
+  
+d. Setelah pembagian data tersebut, dilanjutkan dengan pembentukan model.Pada pembentukan model ini menggunakan banyaknya iterasi sebesar 100. Pada pembentukan model ini kita akan menggunakan data training.  
+```{r}
+#Model
+model1<- boosting(V7~., data = datatraining1, boos = T, mfinal = 100)
+```
+  
+e. Setelah mendapatkan modelnya, maka akan dilanjutkan dengan prediksi dari model yang didapatkan. Karena kita akan melakukan prediksi, maka data yang digunakan adalah data testing.  
+```{r}
+prediksi1<-predict(model1, datatesting1)
+```
+  
+f. Setelah melakukan prediksi, kita dapat melakukan "evaluation model" untuk mengetahui seberapa baik model yang kita dapatkan.  
+```{r}
+confusionMatrix(prediksi1$confusion)
+```
+Dari hasil output di atas, dapat diketahui bahwa besarnya akurasi dari model tersebut adalah 100%. Kemudian kita juga dapat melihat akurasi saat menggunakan semua data.  
+```{r}
+prediksi1Semua<-predict(model1, data1)
+confusionMatrix(prediksi1Semua$confusion)
+```
+Dari output tersebut dapat diketahui juga bahwa akurasi model untuk semua data adalah sebesar 100%.  
+
+**VARIABEL V8 (Nephritis)**  
+```{r}
+data2 <- select(data, V1, V2, V3, V4, V5, V6, V8)
+```
+  
+a. Setelah pemanggilan library tersebut disambung dengan membagi data menjadi dua bagian yaitu data training (90% dari data awal) dan data testing (10% dari data awal)  
+```{r}
+indexes2=createDataPartition(data2$V8, p=0.9, list = F)
+datatraining2 <- data2[indexes2,]
+datatesting2<-data2[-indexes2,]
+print(paste("Jumlah data training  adalah ", nrow(datatraining2)))
+print(paste("Jumlah data testing adalah ", nrow(datatesting2)))
+```
+  
+
+b. Setelah pembagian data tersebut, dilanjutkan dengan pembentukan model.Pada pembentukan model ini menggunakan banyaknya iterasi sebesar 100. Pada pembentukan model ini kita akan menggunakan data training.  
+```{r}
+#Model
+model2<- boosting(V8~., data = datatraining2, boos = T, mfinal = 100)
+```
+  
+c. Setelah mendapatkan modelnya, maka akan dilanjutkan dengan prediksi dari model yang didapatkan. Karena kita akan melakukan prediksi, maka data yang digunakan adalah data testing. 
+```{r}
+prediksi2<-predict(model2, datatesting2)
+```
+  
+d. Setelah melakukan prediksi, kita dapat melakukan "evaluation model" untuk mengetahui seberapa baik model yang kita dapatkan.  
+```{r}
+confusionMatrix(prediksi2$confusion)
+```
+Dari hasil output di atas, dapat diketahui bahwa besarnya akurasi dari model tersebut adalah 100%. Kemudian kita juga dapat melihat akurasi saat menggunakan semua data.  
+```{r}
+prediksi2Semua<-predict(model2, data2)
+confusionMatrix(prediksi2Semua$confusion)
+```
+Dari output tersebut dapat diketahui juga bahwa akurasi model untuk semua data adalah sebesar 100%.  
